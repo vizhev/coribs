@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "org.vizhev.sample"
         minSdk = 22
-        targetSdk = 31
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -33,8 +33,10 @@ android {
 
 dependencies {
 
+    implementation (project(":coribs"))
+
     // Android
-    implementation ("androidx.appcompat:appcompat:1.3.1")
+    implementation ("androidx.appcompat:appcompat:1.5.0")
 
     // Tests
     testImplementation ("junit:junit:4.13.2")
