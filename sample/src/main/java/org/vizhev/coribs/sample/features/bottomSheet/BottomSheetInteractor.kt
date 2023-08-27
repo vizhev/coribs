@@ -1,20 +1,20 @@
-package org.vizhev.coribs.sample.features.home
+package org.vizhev.coribs.sample.features.bottomSheet
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.vizhev.coribs.baserib.BaseInteractor
 import org.vizhev.coribs.sample.data.SomeRepository
-import org.vizhev.coribs.sample.features.home.models.Intent
-import org.vizhev.coribs.sample.features.home.models.State
+import org.vizhev.coribs.sample.features.bottomSheet.models.Intent
+import org.vizhev.coribs.sample.features.bottomSheet.models.State
 
-class HomeInteractor(
+class BottomSheetInteractor(
     private val someRepository: SomeRepository
-) : BaseInteractor(), HomeViewModel {
+) : BaseInteractor(), BottomSheetViewModel {
 
-    override val state = MutableStateFlow(State("Loading data..."))
+    override val state = MutableStateFlow(State())
 
-    private val router by lazy { getRouter<HomeRouter>() }
+    private val router by lazy { getRouter<BottomSheetRouter>() }
 
     override fun init() {
         super.init()
@@ -27,8 +27,6 @@ class HomeInteractor(
     }
 
     override fun performIntent(intent: Intent) {
-        when (intent) {
-            Intent.OnBottomSheetClick -> router.navigateToBottomSheet()
-        }
+        router.exit()
     }
 }

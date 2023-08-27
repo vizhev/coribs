@@ -1,4 +1,4 @@
-package org.vizhev.coribs.sample.features.home
+package org.vizhev.coribs.sample.features.bottomSheet
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,34 +6,33 @@ import org.vizhev.coribs.baserib.BaseRouter
 import org.vizhev.coribs.baserib.BaseViewRouter
 import org.vizhev.coribs.sample.Dependencies
 import org.vizhev.coribs.sample.data.SomeRepository
-import org.vizhev.coribs.sample.features.bottomSheet.BottomSheetRouter
 import org.vizhev.sample.databinding.ViewStubBinding
 
-class HomeRouter(
+class BottomSheetRouter(
     parentRouter: BaseRouter<*, Dependencies>
-) : BaseViewRouter<HomeView, HomeViewModel, HomeInteractor, Dependencies>(
+) : BaseViewRouter<BottomSheeetView, BottomSheetViewModel, BottomSheetInteractor, Dependencies>(
     parentRouter = parentRouter
 ) {
 
-    override fun createInteractor(): HomeInteractor {
-        return HomeInteractor(SomeRepository())
+    override fun createInteractor(): BottomSheetInteractor {
+        return BottomSheetInteractor(SomeRepository())
     }
 
-    override fun getView(parentViewGroup: ViewGroup): HomeView {
+    override fun getView(parentViewGroup: ViewGroup): BottomSheeetView {
         val viewBinding = ViewStubBinding.inflate(
             LayoutInflater.from(parentViewGroup.context),
             parentViewGroup,
             false
         )
-        return HomeView(viewBinding, getViewModel(), parentViewGroup.context)
+        return BottomSheeetView(viewBinding, getViewModel(), parentViewGroup.context)
     }
 
     override fun handleOnBackPressed(): Boolean {
-        navigation.activity?.finish()
+        view?.dismiss() ?: exit()
         return true
     }
 
-    fun navigateToBottomSheet() {
-        navigation.addComponent(BottomSheetRouter(this))
+    fun exit() {
+        navigation.removeViewComponent(this)
     }
 }
