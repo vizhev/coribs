@@ -7,5 +7,5 @@ interface ViewContainer {
 
     val activity: AppCompatActivity
 
-    val parent: ViewGroup
+    val rootView: ViewGroup
 }

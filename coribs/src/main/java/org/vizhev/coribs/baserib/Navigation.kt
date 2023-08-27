@@ -9,13 +9,24 @@ import org.vizhev.coribs.baserib.android.ViewContainer
 import java.util.concurrent.CopyOnWriteArrayList
 
 @SuppressLint("StaticFieldLeak")
-object Navigation {
+class Navigation {
+
+    interface NavigationApp {
+
+        val navigation: Navigation
+    }
+
+    interface RouterContainer<D : BaseDependencies> {
+
+        val router: BaseRouter<*, D>
+    }
 
     lateinit var appContext: Context
         private set
 
     var activity: AppCompatActivity? = null
         private set
+    var isRestartActivity: Boolean = false
 
     private val components = CopyOnWriteArrayList<BaseRouter<*, *>>()
     private var rootViewGroup: ViewGroup? = null
@@ -42,6 +53,7 @@ object Navigation {
     @JvmOverloads
     fun addComponent(router: BaseRouter<*, *>, isSingleInstance: Boolean = true) {
         if (isSingleInstance && isContainsComponent(router.tag)) {
+            router.onExit()
             return
         }
         if (router is BaseViewRouter<*, *, *, *>) {
@@ -84,10 +96,10 @@ object Navigation {
         if (requiredRouter == null || requiredRouter !is BaseViewRouter<*, *, *, *>) {
             return false
         }
-        val componentLength = components.size - 1
+        val componentLength = components.lastIndex
         var isNeedAnimation = false
         for (i in componentLength downTo 0) {
-            if (i >= components.size) {
+            if (i > components.lastIndex) {
                 return false
             }
             val baseRouter = components[i]
@@ -175,12 +187,12 @@ object Navigation {
 
     fun attachViews(viewContainer: ViewContainer) {
         this.activity = viewContainer.activity
-        this.rootViewGroup = viewContainer.parent
+        this.rootViewGroup = viewContainer.rootView
         var lastBaseViewRouter: BaseViewRouter<*, *, *, *>? = null
         components.forEach { baseRouter ->
             if (baseRouter is BaseViewRouter<*, *, *, *>) {
                 lastBaseViewRouter = baseRouter
-                baseRouter.attachView(viewContainer.parent, withTransition = false)
+                baseRouter.attachView(viewContainer.rootView, withTransition = false)
             }
         }
         lastBaseViewRouter?.resumeView()
@@ -240,6 +252,14 @@ object Navigation {
             if (baseRouter is BaseViewRouter<*, *, *, *> && baseRouter.handleOnBackPressed()) {
                 return
             }
+        }
+    }
+
+    fun restartActivity() {
+        val activity = this.activity
+        if (activity != null) {
+            isRestartActivity = true
+            activity.finish()
         }
     }
 

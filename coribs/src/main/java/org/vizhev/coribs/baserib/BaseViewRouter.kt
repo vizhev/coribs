@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.ViewGroup
 import androidx.transition.TransitionManager
 
-abstract class BaseViewRouter<V : BaseViewGroup<*, VM>, VM : BaseViewModel, I : BaseInteractor, C : BaseComponent<I>>
-    (component: C) : BaseRouter<I, C>(component.getInteractor()) {
+abstract class BaseViewRouter<V : BaseViewGroup<*, VM>, VM : BaseViewModel, I : BaseInteractor, D : BaseDependencies>(
+    parentRouter: BaseRouter<*, D>?
+) : BaseRouter<I, D>(
+    parentRouter
+) {
 
     override val marker: Marker = Marker.MARKER_VIEW
 
